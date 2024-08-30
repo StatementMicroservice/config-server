@@ -1,0 +1,92 @@
+spring:
+  cloud:
+    config:
+      fail-fast: false
+      retry:
+        initial-interval: 1000
+        max-attempts: 6
+        multiplier: 1.5
+    stream:
+      kafka:
+        binder:
+          brokers: ${KAFKA_BROKER_URL:localhost:29092}
+      bindings:
+        springCloudBusInput:
+          destination: springCloudBus
+          group: city-statement-notification-account-service-springCloudBus
+    bus:
+      trace:
+        enabled: true
+      refresh:
+        enabled: true
+      env:
+        enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKER_URL:localhost:29092}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  file:
+    path: ${LOG_DIR:./logs/city-statement/city-statement-notification-account-service}
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+        orm:
+          deprecation: DEBUG
+
+openapi:
+  server:
+    env-description: Development
+    protocol: http
+    service-name: City Statement Notification Account Service
+  info:
+    contact:
+      name: CBL
+      email: https://www.cbl.com
+      url: test@example.com
+    title: City Statement Notification Account Service
+    version: 1.0
+    description: City Statement Notification Account Service API
+    license:
+      name: Apache 2.0
+      url: http://www.apache.org/licenses/LICENSE-2.0.html
+    termsOfService: http://swagger.io/terms/
+  security:
+    bearerToken: Bearer Token
+    basicAuth: Basic Authentication
+    description: JWT Authentication
+    scheme: bearer
+    bearerFormat: JWT
+  component:
+    bearerToken: Bearer Token
+    basicAuth: Basic Authentication
+    description: Basic Authentication
+    scheme: basic
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    path: /city-statement/notification-account/swagger-ui
+  api-docs:
+    path: /city-statement/notification-account/v3/api-docs
+
+notification-account-service:
+  serverPort: ${server.port}
+  activeProfile: ${spring.profiles.active:dev}
+  jwtSecret: "NGg0MnZxb2Z4eXlscWpib2FscnM3amFmMmYya2Uxa3RuYmRlOHJvemNtMmdhdjhseXg3NG9mMGF1dG5iMHlwMHljM2NjZ3VpM25ncGxyZDFoMjZkcTM1d25zZnRwNjllcWJic3oxeWFtZWFwaXBkZHNjeHF0aHh1dXVuNGZ1eWg="
+  accessTokenExpiry: 60
+  refreshTokenExpiry: 15
+  testValue: This msg is from config server for [city-statement-notification-account-service]-- dev2
+  auth-service:
+    base-url: ${CITY_STATEMENT_AUTH_SERVICE_BASE_URL:http://localhost:8585}
+    user-details-endpoint: /city-statement/auth/service-to-service/api/user-details/v1/userinfo

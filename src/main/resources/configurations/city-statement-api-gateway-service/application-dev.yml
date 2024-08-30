@@ -1,0 +1,67 @@
+spring:
+  cloud:
+    config:
+      fail-fast: false
+      retry:
+        initial-interval: 1000
+        max-attempts: 6
+        multiplier: 1.5
+    stream:
+      kafka:
+        binder:
+          brokers: ${KAFKA_BROKER_URL:localhost:29092}
+      bindings:
+        springCloudBusInput:
+          destination: springCloudBus
+          group: city-statement-api-gateway-service-springCloudBus
+    bus:
+      trace:
+        enabled: true
+      refresh:
+        enabled: true
+      env:
+        enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  file:
+    path: ${LOG_DIR:./logs/city-statement/city-statement-api-gateway-service}
+
+gateway-service:
+  serverPort: ${server.port}
+  activeProfile: ${spring.profiles.active:dev}
+  service-routes:
+    city-statement-auth-service-application-name: ${CITY_STATEMENT_AUTH_SERVICE_APPLICATION_NAME:city-statement-auth-service}
+    city-statement-auth-service-base-uri: ${CITY_STATEMENT_AUTH_SERVICE_BASE_URL:http://localhost:8585}
+    city-statement-auth-service-path: /city-statement/auth/**
+    city-statement-auth-service-route-id: ${gateway-service.service-routes.city-statement-auth-service-application-name:city-statement-auth-service}
+
+    city-statement-app-account-service-application-name: ${CITY_STATEMENT_APP_ACCOUNT_SERVICE_APPLICATION_NAME:city-statement-app-account-service}
+    city-statement-app-account-service-base-uri: ${CITY_STATEMENT_APP_ACCOUNT_SERVICE_BASE_URL:http://localhost:8586}
+    city-statement-app-account-service-path: /city-statement/app-account/**
+    city-statement-app-account-service-route-id: ${gateway-service.service-routes.city-statement-app-account-service-application-name:city-statement-app-account-service}
+
+    city-statement-app-card-service-application-name: ${CITY_STATEMENT_APP_CARD_SERVICE_APPLICATION_NAME:city-statement-app-card-service}
+    city-statement-app-card-service-base-uri: ${CITY_STATEMENT_APP_CARD_SERVICE_BASE_URL:http://localhost:9293}
+    city-statement-app-card-service-path: /city-statement/app-card/**
+    city-statement-app-card-service-route-id: ${gateway-service.service-routes.city-statement-app-card-service-application-name:city-statement-app-card-service}
+
+    city-statement-notification-account-service-application-name: ${CITY_STATEMENT_NOTIFICATION_ACCOUNT_SERVICE_APPLICATION_NAME:city-statement-notification-account-service}
+    city-statement-notification-account-service-base-uri: ${CITY_STATEMENT_NOTIFICATION_ACCOUNT_SERVICE_BASE_URL:http://localhost:9191}
+    city-statement-notification-account-service-path: /city-statement/notification-account/**
+    city-statement-notification-account-service-route-id: ${gateway-service.service-routes.city-statement-notification-account-service-application-name:city-statement-notification-account-service}
+
+    city-statement-notification-card-service-application-name: ${CITY_STATEMENT_NOTIFICATION_CARD_SERVICE_APPLICATION_NAME:city-statement-notification-card-service}
+    city-statement-notification-card-service-base-uri: ${CITY_STATEMENT_NOTIFICATION_CARD_SERVICE_BASE_URL:http://localhost:9292}
+    city-statement-notification-card-service-path: /city-statement/notification-card/**
+    city-statement-notification-card-service-route-id: ${gateway-service.service-routes.city-statement-notification-card-service-application-name:city-statement-notification-card-service}
+
+    city-statement-report-service-application-name: ${CITY_STATEMENT_REPORT_SERVICE_APPLICATION_NAME:city-statement-report-service}
+    city-statement-report-service-base-uri: ${CITY_STATEMENT_REPORT_SERVICE_BASE_URL:http://localhost:8787}
+    city-statement-report-service-path: /city-statement/report/**
+    city-statement-report-service-route-id: ${gateway-service.service-routes.city-statement-report-service-application-name:city-statement-report-service}

@@ -1,0 +1,32 @@
+server:
+  port: ${SERVER_PORT:8888}
+
+spring:
+  application:
+    name: ${APPLICATION_NAME:city-statement-config-server}
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:native}
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: resources/application.yml
+    bus:
+      enabled: true
+    stream:
+      kafka:
+        binder:
+          brokers: ${KAFKA_BROKER_URL:localhost:29092}
+      bindings:
+        springCloudBusOutput:
+          destination: springCloudBus
+          group: config-server-springCloudBus
+        springCloudBusInput:
+          destination: springCloudBus
+          group: config-server-springCloudBus
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

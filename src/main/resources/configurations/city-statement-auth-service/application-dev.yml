@@ -1,0 +1,107 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/city-statement-security?useSSL=false&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        physical-strategy: com.cbl.statement.security.config.hibernateconfig.PreserveCaseNamingStrategy
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+  cloud:
+    config:
+      fail-fast: false
+      retry:
+        initial-interval: 1000
+        max-attempts: 6
+        multiplier: 1.5
+    stream:
+      kafka:
+        binder:
+          brokers: ${KAFKA_BROKER_URL:localhost:29092}
+      bindings:
+        springCloudBusInput:
+          destination: springCloudBus
+          group: city-statement-auth-service-springCloudBus
+    bus:
+      trace:
+        enabled: true
+      refresh:
+        enabled: true
+      env:
+        enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  file:
+    path: ${LOG_DIR:./logs/city-statement/city-statement-auth-service}
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+        orm:
+          deprecation: DEBUG
+
+openapi:
+  server:
+    env-description: Development
+    protocol: http
+    service-name: City Statement Auth Service
+  info:
+    contact:
+      name: CBL
+      email: https://www.cbl.com
+      url: test@example.com
+    title: City Statement Auth Service
+    version: 1.0
+    description: City Statement Auth API
+    license:
+      name: Apache 2.0
+      url: http://www.apache.org/licenses/LICENSE-2.0.html
+    termsOfService: http://swagger.io/terms/
+  security:
+    bearerToken: Bearer Token
+    basicAuth: Basic Authentication
+    description: JWT Authentication
+    scheme: bearer
+    bearerFormat: JWT
+  component:
+    bearerToken: Bearer Token
+    basicAuth: Basic Authentication
+    description: Basic Authentication
+    scheme: basic
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    path: /city-statement/auth/swagger-ui
+  api-docs:
+    path: /city-statement/auth/v3/api-docs
+
+auth-service:
+  serverPort: ${server.port}
+  activeProfile: ${spring.profiles.active:dev}
+  jwtSecret: "NGg0MnZxb2Z4eXlscWpib2FscnM3amFmMmYya2Uxa3RuYmRlOHJvemNtMmdhdjhseXg3NG9mMGF1dG5iMHlwMHljM2NjZ3VpM25ncGxyZDFoMjZkcTM1d25zZnRwNjllcWJic3oxeWFtZWFwaXBkZHNjeHF0aHh1dXVuNGZ1eWg="
+  accessTokenExpiry: 60
+  refreshTokenExpiry: 15
+  testValue: This msg is from config server for [city-statement-auth-service] dev-1
+
+
+
+
+
+
+
